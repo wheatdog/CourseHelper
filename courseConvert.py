@@ -33,6 +33,69 @@ class course:
 				elif j in order:
 					self.int_time.append(week.index(self.c_time[index[i]])*15 + order.index(j) + 12)
 
+class schedule:
+	def __init__(self):
+		self.schedule_list = [0]*90
+
+		# pre-disabled class
+		# 0th class and night class
+		for i in range(6):
+			self.schedule_list[15*i] = 1
+			for j in range(4):
+				self.schedule_list[15*i+j+11] = 1
+
+		# SAT
+		for i in range(15):
+			self.schedule_list[75+i] = 1
+
+	schedule_list = []
+	class_list = []
+	course_list = []
+
+	def filter(self):
+		temp_list = []
+		must_list = []
+
+		for i in range(len(self.schedule_list)):
+			if self.schedule_list[i] == 2:
+				must_list.append(i)
+
+		#filter A1~8
+		for aClass in self.course_list:
+			if aClass.c_type != "0":
+				temp_list.append(aClass)
+
+
+
+
+		# remove the one not in must_list
+		indexToRemove = []
+		new_list = []
+		for i in range(len(temp_list)):
+			for j in must_list:
+				if j not in temp_list[i].int_time:
+					indexToRemove.append(i)
+		for i in range(len(temp_list)):
+			if i not in indexToRemove:
+				new_list.append(temp_list[i])
+		temp_list = new_list
+		indexToRemove = []
+		new_list = []
+
+		# remove unwanted
+		for i in range(len(temp_list)):
+			for aTime in temp_list[i].int_time:
+				if self.schedule_list[aTime] == 1:
+					indexToRemove.append(i)
+		for i in range(len(temp_list)):
+			if i not in indexToRemove:
+				new_list.append(temp_list[i])
+		temp_list = new_list
+
+		return temp_list
+
+
+
 
 def convertTime(c_time):
 	if c_time == "":
@@ -68,7 +131,7 @@ def convertType(c_type):
 
 
 
-course_list = []
+aSchedule = schedule()
 
 # for line in codecs.open("course.txt", "r", "utf-8").readlines():
 # 	data = line.split("#")
@@ -81,17 +144,28 @@ i = 0
 while i + 15 <= len(data):
 	if data[i+1] == "":
 		data[i+1] = "0"
-	course_list.append(course(data[i], data[i+4], data[i+1], convertTime(data[i+11]), convertType(data[i+14])))
+	aSchedule.course_list.append(course(data[i], data[i+4], data[i+1], convertTime(data[i+11]), convertType(data[i+14])))
 	# print(data[i])
 	i += 15
-
-output = codecs.open("output.txt", "w", "utf-8")
-for c in course_list:
+for c in aSchedule.course_list:
 	c.timeToInt()
-	output.write(c.c_no + " " + c.c_dep + " " + str(len(c.int_time)) + " " + " ".join(str(x) for x in c.int_time) + " " + c.c_type + "\n")
 
+# output = codecs.open("output.txt", "w", "utf-8")
+# for c in course_list:
+# 	c.timeToInt()
+# 	output.write(c.c_no + " " + c.c_dep + " " + str(len(c.int_time)) + " " + " ".join(str(x) for x in c.int_time) + " " + c.c_type + "\n")
 
+#test filter
+aSchedule.schedule_list[35] = 2
+for ob in aSchedule.filter():
+	print(ob.c_no)
+	print(ob.c_time)
+	print(ob.c_type)
 
+# aSchedule.schedule_list[35] = 2
+# aSchedule.filter()
+# for i in range(6):
+# 	print(aSchedule.schedule_list[15*i: 15*i+15])
 
 
 
