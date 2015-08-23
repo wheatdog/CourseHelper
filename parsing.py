@@ -9,7 +9,7 @@ PageCount = 0
 PageMax = 603
 # PageMax = 2
 while PageCount < PageMax:
-    print (PageCount)
+    #print (PageCount)
 
     Content = urllib.request.urlopen(URL + str(PageCount)).read()
     Soup = BeautifulSoup(Content, "html.parser")
