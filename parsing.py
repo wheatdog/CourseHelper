@@ -1,5 +1,5 @@
 from bs4 import BeautifulSoup
-import urllib2
+import urllib.request
 
 FileToStore = open("ParsingDataDemo", "w")
 
@@ -11,8 +11,8 @@ PageMax = 603
 while PageCount < PageMax:
     print (PageCount)
 
-    Content = urllib2.urlopen(URL + str(PageCount)).read()
-    Soup = BeautifulSoup(Content, 'html')
+    Content = urllib.request.urlopen(URL + str(PageCount)).read()
+    Soup = BeautifulSoup(Content, "html.parser")
     TableStats = Soup.find('table', {"id" : "searchresult"})
 
     for Row in TableStats.findAll('tr')[1:]:
@@ -21,7 +21,7 @@ while PageCount < PageMax:
         for Item in Col:
             if ColCouter == 15:
                 break
-            FileToStore.write(Item.text.encode('utf-8') + '#');
+            FileToStore.write(Item.text + "#");
             ColCouter += 1
         FileToStore.write('\n');
 
